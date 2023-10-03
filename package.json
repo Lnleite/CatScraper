@@ -1,4 +1,7 @@
 {
+  "scripts": {
+    "start": "node index.js"
+  },
   "dependencies": {
     "image-downloader": "^4.3.0",
     "jsdom": "^22.1.0"
