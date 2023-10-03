@@ -31,7 +31,9 @@ function downloadCatImages(catImages) {
     download
       .image({
         url: src,
-        dest: `C:/Users/lndub/Documents/CodingFolder/scrapping/catImages/${filename}.jpg`,
+        dest: `C:/Users/lndub/Documents/CodingFolder/scrapping/catImages/${
+          filename || `Cat${index}`
+        }.jpg`,
       })
       .then(({ filename }) => console.log(`Saved to ${filename}`))
       .catch((err) => console.log(err));
