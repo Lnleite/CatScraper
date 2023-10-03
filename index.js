@@ -34,8 +34,8 @@ function downloadCatImages(catImgNodes) {
         url: src,
         dest: `${__dirname}/catImages/${filename || `Cat${index}`}.jpg`,
       })
-      .then(({ filename }) => console.log(`Saved to ${filename}`))
-      .catch((err) => console.log(err));
+      .then(({ filename }) => console.info(`Saved to ${filename}`))
+      .catch((err) => console.error(err));
   });
 }
 
