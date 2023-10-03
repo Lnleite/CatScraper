@@ -28,12 +28,11 @@ function downloadCatImages(catImages) {
   catImages.forEach((img, index) => {
     let src = img.getAttribute("data-src") || img.src;
     let filename = src.split("/").at(-1);
+
     download
       .image({
         url: src,
-        dest: `C:/Users/lndub/Documents/CodingFolder/scrapping/catImages/${
-          filename || `Cat${index}`
-        }.jpg`,
+        dest: `${__dirname}/catImages/${filename || `Cat${index}`}.jpg`,
       })
       .then(({ filename }) => console.log(`Saved to ${filename}`))
       .catch((err) => console.log(err));
