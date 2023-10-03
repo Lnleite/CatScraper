@@ -3,19 +3,19 @@ const { JSDOM } = jsdom;
 const download = require("image-downloader");
 
 async function getAllCatImgNodes(numOfPages) {
-  const catImagePromise = [];
+  const pageDomPromises = [];
   const catImgNodeArray = [];
 
-  for (let i = 1; i < numOfPages; i++) {
-    let url = `https://icanhas.cheezburger.com${i === 1 ? "" : `/page/${i}`}`;
-    catImagePromise.push(JSDOM.fromURL(url, {}));
+  for (let i = 1; i <= numOfPages; i++) {
+    const url = `https://icanhas.cheezburger.com${i === 1 ? "" : `/page/${i}`}`;
+    pageDomPromises.push(JSDOM.fromURL(url));
   }
 
-  await Promise.all(catImagePromise).then((doms) => {
+  await Promise.all(pageDomPromises).then((doms) => {
     doms.forEach((dom) => {
       catImgNodeArray.push(
         ...Array.from(
-          dom.window.document.querySelectorAll(".mu-post .resp-media")
+          dom.window.document.querySelectorAll("section .resp-media")
         )
       );
     });
@@ -24,10 +24,10 @@ async function getAllCatImgNodes(numOfPages) {
   return catImgNodeArray;
 }
 
-function downloadCatImages(catImages) {
-  catImages.forEach((img, index) => {
-    let src = img.getAttribute("data-src") || img.src;
-    let filename = src.split("/").at(-1);
+function downloadCatImages(catImgNodes) {
+  catImgNodes.forEach((imgNode, index) => {
+    const src = imgNode.getAttribute("data-src") || imgNode.src;
+    const filename = src.split("/").at(-1);
 
     download
       .image({
@@ -40,8 +40,8 @@ function downloadCatImages(catImages) {
 }
 
 async function main() {
-  const catImages = await getAllCatImgNodes(10);
-  downloadCatImages(catImages);
+  const catImgNodes = await getAllCatImgNodes(1);
+  downloadCatImages(catImgNodes);
 }
 
 main();
