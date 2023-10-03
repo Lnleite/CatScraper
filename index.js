@@ -2,28 +2,31 @@ const jsdom = require("jsdom");
 const { JSDOM } = jsdom;
 const download = require("image-downloader");
 
-async function getAllCatImages(numOfPages) {
-  const catImages = [];
+async function getAllCatImgNodes(numOfPages) {
+  const catImagePromise = [];
+  const catImgNodeArray = [];
 
   for (let i = 1; i < numOfPages; i++) {
     let url = `https://icanhas.cheezburger.com${i === 1 ? "" : `/page/${i}`}`;
-    await JSDOM.fromURL(url, {}).then((dom) => {
-      console.log(dom);
-      catImages.push(
+    catImagePromise.push(JSDOM.fromURL(url, {}));
+  }
+
+  await Promise.all(catImagePromise).then((doms) => {
+    doms.forEach((dom) => {
+      catImgNodeArray.push(
         ...Array.from(
           dom.window.document.querySelectorAll(".mu-post .resp-media")
         )
       );
     });
-  }
+  });
 
-  return catImages;
+  return catImgNodeArray;
 }
 
 function downloadCatImages(catImages) {
   catImages.forEach((img, index) => {
     let src = img.getAttribute("data-src") || img.src;
-    console.log(src);
     download
       .image({
         url: src,
@@ -35,7 +38,8 @@ function downloadCatImages(catImages) {
 }
 
 async function main() {
-  const catImages = await getAllCatImages(10);
+  const catImages = await getAllCatImgNodes(10);
+  console.log(catImages);
 
   downloadCatImages(catImages);
 }
